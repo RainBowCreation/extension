@@ -11,7 +11,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.common.config.Config;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.rainbowcreation.extension.server.config.GenaralConfig;
@@ -46,6 +45,7 @@ import org.apache.logging.log4j.Logger;
 
 import static net.rainbowcreation.extension.server.config.GenaralConfig.settings;
 
+@Mod.EventBusSubscriber
 @Mod(modid = Reference.MODID, name = Reference.NAME, version = Reference.VERSION, serverSideOnly = true, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.12.2]")
 public class Main {
   @Mod.Instance
@@ -163,6 +163,8 @@ public class Main {
     }
     switch (settings.MODE) {
       case ("server"): {
+        if (!settings.MAINTENANCE)
+          break;
         if (time[0] != timePrevious[0]) {
           playerList.sendMessage(new TextComponentString(TextFormatting.BOLD + "[Maintenance Scheduler] " + TextFormatting.RESET).appendSibling(MAINTENANCE_TEXT));
         }
@@ -175,6 +177,8 @@ public class Main {
         break;
       }
       case ("lobby"): {
+        if (!settings.MAINTENANCE)
+          break;
         if (time[0] >= settings.M_TIME_FROM[0] && time[0] < settings.M_TIME_TO[0]) {
           TextComponentString text = new TextComponentString("Time remaining ");
           if (time[0] < M_TIME_TO_1[0])

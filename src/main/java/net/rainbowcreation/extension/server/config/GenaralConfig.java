@@ -14,6 +14,8 @@ import net.rainbowcreation.extension.server.utils.Time;
 public class GenaralConfig {
     public static Settings settings = new Settings();
     public static class Settings {
+        @Comment({"Enable dialy maintenance"})
+        public boolean MAINTENANCE = false;
         @Config.Comment({"Time between each clear [H, M, S]"})
         public int[] TIME = Time.secondToTime(1800);
 
