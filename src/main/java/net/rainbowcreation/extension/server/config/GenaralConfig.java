@@ -41,13 +41,7 @@ public class GenaralConfig {
         public String MODE = "server";
     }
 
-    public static Whitelist whitelist = new Whitelist();
     public static Blacklist blacklist = new Blacklist();
-
-    public static class Whitelist {
-        @Comment({"Item IDs of items to be ignored when clearing, these items will not be cleared. Format: modid:itemid, ex: minecraft:diamond"})
-        public String[] ITEM_WHITELIST = new String[] { "minecraft:diamond", "minecraft:diamond_block", "minecraft:dragon_egg" };
-    }
 
     public static class Blacklist {
         @Comment({"Player Name That wont get Title but resieved as chat instead"})

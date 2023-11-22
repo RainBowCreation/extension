@@ -3,10 +3,8 @@ package net.rainbowcreation.extension.server;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.server.management.PlayerList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -48,15 +46,11 @@ import static net.rainbowcreation.extension.server.config.GenaralConfig.settings
 @Mod.EventBusSubscriber
 @Mod(modid = Reference.MODID, name = Reference.NAME, version = Reference.VERSION, serverSideOnly = true, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.12.2]")
 public class Main {
-  @Mod.Instance
-  public static Main instance;
   public static Logger LOGGER = FMLLog.log;
-  public static File config;
   private static int staticTime;
 
   private static int timeRemaining;
   private static int[] timePrevious = new int[3];
-  private static List<String> whitelist;
   public static List<String> blacklist;
   private static int Tick = 20;
   private static int tick = Tick;
@@ -79,9 +73,7 @@ public class Main {
         LOGGER.info("Now using DatabaseSourceStrategy.");
         return;
       case FILE:
-        this
-          
-          .dataSourceStrategy = (IDataSourceStrategy)new FileDataSourceStrategy(Paths.get(event.getModConfigurationDirectory().getAbsolutePath(), new String[] { Reference.NAME+".csv" }).toFile());
+        this.dataSourceStrategy = (IDataSourceStrategy)new FileDataSourceStrategy(Paths.get(event.getModConfigurationDirectory().getAbsolutePath(), new String[] { Reference.NAME+".csv" }).toFile());
         LOGGER.info("Now using FileDataSourceStrategy.");
         return;
     } 
@@ -109,7 +101,6 @@ public class Main {
     Time.TIME = Time.getTimeInSecond(settings.TIME);
     staticTime = Time.TIME;
     timeRemaining = staticTime;
-    whitelist = Arrays.asList(GenaralConfig.whitelist.ITEM_WHITELIST);
     blacklist = Arrays.asList(GenaralConfig.blacklist.DO_NOT_BROADCAST_TITLE_TO);
     Time.WARNING_TIME = Time.getTimeInSecond(settings.WARNING_TIME);
     int i = Time.WARNING_TIME;
@@ -148,11 +139,8 @@ public class Main {
         int amount = 0;
         for (Entity entity : world.loadedEntityList) {
           if (entity instanceof EntityItem) {
-            EntityItem item = (EntityItem) entity;
-            if (!whitelist.contains(((ResourceLocation) Item.REGISTRY.getNameForObject(item.getItem().getItem())).toString())) {
-              item.setDead();
-              amount++;
-            }
+            entity.setDead();
+            amount++;
           }
         }
         if (settings.MODE.equals("server"))
@@ -163,16 +151,16 @@ public class Main {
     }
     switch (settings.MODE) {
       case ("server"): {
-        if (!settings.MAINTENANCE)
-          break;
-        if (time[0] != timePrevious[0]) {
-          playerList.sendMessage(new TextComponentString(TextFormatting.BOLD + "[Maintenance Scheduler] " + TextFormatting.RESET).appendSibling(MAINTENANCE_TEXT));
-        }
-        Time.alert(settings.M_TIME_FROM, "Maintenance Scheduler", "Server close in", playerList, true);
         Time.alert(timeRemaining, "Clear Lag", "Items will be cleared in", playerList);
-        if (Time.getSubstractInSecond(settings.M_TIME_FROM, Time.getCurrentTime()) == 0) {
-          world.getMinecraftServer().initiateShutdown();
-          return;
+        if (settings.MAINTENANCE) {
+          if (time[0] != timePrevious[0]) {
+            playerList.sendMessage(new TextComponentString(TextFormatting.BOLD + "[Maintenance Scheduler] " + TextFormatting.RESET).appendSibling(MAINTENANCE_TEXT));
+          }
+          Time.alert(settings.M_TIME_FROM, "Maintenance Scheduler", "Server close in", playerList, true);
+          if (Time.getSubstractInSecond(settings.M_TIME_FROM, Time.getCurrentTime()) == 0) {
+            world.getMinecraftServer().initiateShutdown();
+            return;
+          }
         }
         break;
       }

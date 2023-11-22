@@ -60,7 +60,7 @@ public class Handler {
       case ("lobby"): {
         double x, y, z;
         x = -23.5;
-        y = 20.5;
+        y = 63.5;
         z = 0.5;
         player.setPositionAndUpdate(x, y, z);
         BlockPos pos = player.getPosition();
