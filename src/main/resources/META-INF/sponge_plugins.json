@@ -1,0 +1,29 @@
+{
+  "loader": {
+    "name": "java_plain",
+    "version": "1.0"
+  },
+  "license": "MIT",
+  "plugins": [
+    {
+      "id": "spongelobby",
+      "name": "spongelobby",
+      "version": "${version}",
+      "entrypoint": "net.rainbowcreation.spongelobby.Spongelobby",
+      "description": "My plugin description",
+      "branding": {},
+      "links": {
+      },
+      "contributors": [
+      ],
+      "dependencies": [
+        {
+          "id": "spongeapi",
+          "version": "7.4.0",
+          "load-order": "after",
+          "optional": false
+        }
+      ]
+    }
+  ]
+}
