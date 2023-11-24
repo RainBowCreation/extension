@@ -1,21 +1,20 @@
 package net.rainbowcreation.extension.server;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.rainbowcreation.extension.server.config.GenaralConfig;
-import net.rainbowcreation.extension.server.event.Handler;
-import net.rainbowcreation.extension.server.utils.IString;
-import net.rainbowcreation.extension.server.utils.Packet;
-import net.rainbowcreation.extension.server.utils.Reference;
+import net.rainbowcreation.extension.server.event.loginer.Handler;
+import net.rainbowcreation.extension.server.utils.*;
 import net.rainbowcreation.extension.server.command.LoggedCommand;
 import net.rainbowcreation.extension.server.command.LoginCommand;
 import net.rainbowcreation.extension.server.command.RegisterCommand;
@@ -26,10 +25,11 @@ import net.rainbowcreation.extension.server.guard.datasource.IDataSourceStrategy
 import net.rainbowcreation.extension.server.guard.datasource.db.ConnectionFactory;
 import net.rainbowcreation.extension.server.guard.datasource.db.IConnectionFactory;
 
-import java.io.File;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.command.ICommand;
 import net.minecraftforge.common.MinecraftForge;
@@ -38,10 +38,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.rainbowcreation.extension.server.utils.Time;
 import org.apache.logging.log4j.Logger;
 
 import static net.rainbowcreation.extension.server.config.GenaralConfig.settings;
+import static net.rainbowcreation.extension.server.config.ClearLagConfig.clearLag;
 
 @Mod.EventBusSubscriber
 @Mod(modid = Reference.MODID, name = Reference.NAME, version = Reference.VERSION, serverSideOnly = true, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.12.2]")
@@ -56,11 +56,11 @@ public class Main {
   private static int tick = Tick;
   private static int[] M_TIME_TO_1;
   private static TextComponentString MAINTENANCE_TEXT = new TextComponentString(TextFormatting.RED + "Daily Maintenance " + TextFormatting.RESET);
-
+  public static Map<Long, Integer> redstoneCounts = new HashMap<>();
   private Handler handler;
   
   private IDataSourceStrategy dataSourceStrategy;
-  
+
   @EventHandler
   public void preInit(FMLPreInitializationEvent event) throws Exception {
     LOGGER = event.getModLog();
@@ -98,24 +98,24 @@ public class Main {
         event.registerServerCommand((ICommand)new RegisterCommand(this.handler, this.dataSourceStrategy, LoginerConfig.emailRequired));
       } 
     }
-    Time.TIME = Time.getTimeInSecond(settings.TIME);
-    staticTime = Time.TIME;
+    ITime.TIME = ITime.getTimeInSecond(clearLag.TIME);
+    staticTime = ITime.TIME;
     timeRemaining = staticTime;
     blacklist = Arrays.asList(GenaralConfig.blacklist.DO_NOT_BROADCAST_TITLE_TO);
-    Time.WARNING_TIME = Time.getTimeInSecond(settings.WARNING_TIME);
-    int i = Time.WARNING_TIME;
+    ITime.WARNING_TIME = ITime.getTimeInSecond(clearLag.WARNING_TIME);
+    int i = ITime.WARNING_TIME;
     while (i > 10) {
-      Time.WARNING_TIME_LIST.add(i);
+      ITime.WARNING_TIME_LIST.add(i);
       i/=2;
     }
     for (int j = 1; j <= 10; j++)
-      Time.WARNING_TIME_LIST.add(j);
-    Time.prefix = settings.TIME_ZONE_PREFIX;
-    Time.offset = settings.TIME_ZONE_OFFSET;
-    timePrevious = Time.getCurrentTime();
-    String[] TIME_FROM = Time.timeToString(settings.M_TIME_FROM);
-    String[] TIME_TO = Time.timeToString(settings.M_TIME_TO);
-    M_TIME_TO_1 = Time.getSubstract(settings.M_TIME_TO, new int[]{0,0,1});
+      ITime.WARNING_TIME_LIST.add(j);
+    ITime.prefix = settings.TIME_ZONE_PREFIX;
+    ITime.offset = settings.TIME_ZONE_OFFSET;
+    timePrevious = ITime.getCurrentTime();
+    String[] TIME_FROM = ITime.timeToString(settings.M_TIME_FROM);
+    String[] TIME_TO = ITime.timeToString(settings.M_TIME_TO);
+    M_TIME_TO_1 = ITime.getSubstract(settings.M_TIME_TO, new int[]{0,0,1});
     MAINTENANCE_TEXT.appendSibling(new TextComponentString(TIME_FROM[0] + ":" + TIME_FROM[1] + TextFormatting.RED + "-" + TextFormatting.RESET + TIME_TO[0] + ":" + TIME_TO[1] + TextFormatting.RED));
   }
 
@@ -126,39 +126,44 @@ public class Main {
       tick--;
       return;
     }
-    else
-      tick = Tick;
-    int[] time = Time.getCurrentTime();
+    tick = Tick;
+    int[] time = ITime.getCurrentTime();
     if (time[2] == timePrevious[2])
       return;
+    timePrevious = time;
+    if (clearLag.REDSTON_LIMIT > 0)
+      redstoneCounts.clear();
     World world = event.world;
-    PlayerList playerList = world.getMinecraftServer().getPlayerList();
-    List<EntityPlayerMP> plist = playerList.getPlayers();
+    MinecraftServer server = world.getMinecraftServer();
+    PlayerList playerList = server.getPlayerList();
     if (timeRemaining == 0) {
-      if (settings.clearItems) {
+      int j = 0;
+      if (clearLag.CLEAR_ITEM) {
+        List<Entity> entityList = world.loadedEntityList;
         int amount = 0;
-        for (Entity entity : world.loadedEntityList) {
-          if (entity instanceof EntityItem) {
-            entity.setDead();
-            amount++;
-          }
+        for (Entity entity : entityList) {
+          entity.setDead();
+          amount++;
         }
-        if (settings.MODE.equals("server"))
+        server.getCommandManager().executeCommand(server ,"kill @e[type=item] @e[type=xp_orb]");
+        if (settings.MODE.equals("server")) {
           playerList.sendMessage((ITextComponent) new TextComponentString(TextFormatting.BOLD + "[Clear Lag] " + TextFormatting.RESET + "Cleared " + TextFormatting.RED + amount + TextFormatting.RESET + " items!"));
+        }
       }
       timeRemaining = staticTime;
       return;
     }
     switch (settings.MODE) {
       case ("server"): {
-        Time.alert(timeRemaining, "Clear Lag", "Items will be cleared in", playerList);
+        if (clearLag.CLEAR_ITEM)
+          ITime.alert(timeRemaining, "Clear Lag", "Items&XPOrb will be cleared in", playerList);
         if (settings.MAINTENANCE) {
           if (time[0] != timePrevious[0]) {
             playerList.sendMessage(new TextComponentString(TextFormatting.BOLD + "[Maintenance Scheduler] " + TextFormatting.RESET).appendSibling(MAINTENANCE_TEXT));
           }
-          Time.alert(settings.M_TIME_FROM, "Maintenance Scheduler", "Server close in", playerList, true);
-          if (Time.getSubstractInSecond(settings.M_TIME_FROM, Time.getCurrentTime()) == 0) {
-            world.getMinecraftServer().initiateShutdown();
+          ITime.alert(settings.M_TIME_FROM, "Maintenance Scheduler", "Server close in", playerList, true);
+          if (ITime.getSubstractInSecond(settings.M_TIME_FROM, ITime.getCurrentTime()) == 0) {
+            server.initiateShutdown();
             return;
           }
         }
@@ -167,8 +172,9 @@ public class Main {
       case ("lobby"): {
         if (!settings.MAINTENANCE)
           break;
+        List<EntityPlayerMP> plist = playerList.getPlayers();
         if (time[0] >= settings.M_TIME_FROM[0] && time[0] < settings.M_TIME_TO[0]) {
-          TextComponentString text = new TextComponentString("Time remaining ");
+          TextComponentString text = new TextComponentString("ITime remaining ");
           if (time[0] < M_TIME_TO_1[0])
             text.appendSibling(new TextComponentString(TextFormatting.RED + String.valueOf(M_TIME_TO_1[0] - time[0]) + TextFormatting.RESET + ":"));
           String minute = String.valueOf(M_TIME_TO_1[1] - time[1]);
@@ -179,8 +185,8 @@ public class Main {
             second = "0" + second;
           text.appendSibling(new TextComponentString(TextFormatting.RED + minute + TextFormatting.RESET + ":" + TextFormatting.RED + second));
           for (EntityPlayerMP playerMP : plist) {
-            Packet.sent(playerMP, MAINTENANCE_TEXT, SPacketTitle.Type.TITLE, 0, 100, 0);
-            Packet.sent(playerMP, text, SPacketTitle.Type.SUBTITLE, 0, 100, 0);
+            IPacket.sent(playerMP, MAINTENANCE_TEXT, SPacketTitle.Type.TITLE, 0, 100, 0);
+            IPacket.sent(playerMP, text, SPacketTitle.Type.SUBTITLE, 0, 100, 0);
           }
         }
         else if (time[0] == settings.M_TIME_TO[0] && time[1] == settings.M_TIME_TO[1] && time[2] == settings.M_TIME_TO[2]) {
@@ -191,7 +197,12 @@ public class Main {
         break;
       }
     }
-    timeRemaining-= Time.getSubstractInSecond(time, timePrevious);
-    timePrevious = time;
+    timeRemaining-= ITime.getSubstractInSecond(time, timePrevious);
+  }
+
+  @SubscribeEvent
+  public void onPlace(BlockEvent.PlaceEvent event) {
+    Main.LOGGER.info("placed");
+    Main.LOGGER.info(event.getPlacedBlock());
   }
 }

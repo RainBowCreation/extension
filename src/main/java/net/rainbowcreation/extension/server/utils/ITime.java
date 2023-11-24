@@ -12,7 +12,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Time {
+public class ITime {
     public static String offset;
     public static String prefix;
     public static int TIME;
@@ -64,7 +64,7 @@ public class Time {
     public static Boolean alert(int timeRemaining, String prefix, String str, PlayerList playerList) {
         if (!WARNING_TIME_LIST.contains(timeRemaining))
             return false;
-        int[] lst = Time.secondToTime(timeRemaining);
+        int[] lst = ITime.secondToTime(timeRemaining);
         TextComponentString text = new TextComponentString(TextFormatting.BOLD + "[" + prefix + "] " + TextFormatting.RESET + str + " :");
         if (lst[0] > 0)
             text.appendSibling(new TextComponentString(" " + TextFormatting.RED + lst[0] + TextFormatting.RESET + " hours"));
@@ -82,7 +82,7 @@ public class Time {
             return alert(timeRemaining, prefix, str, playerList);
         if (!WARNING_TIME_LIST.contains(timeRemaining))
             return false;
-        int[] lst = Time.secondToTime(timeRemaining);
+        int[] lst = ITime.secondToTime(timeRemaining);
         TextComponentString title = new TextComponentString(TextFormatting.BOLD + prefix);
         TextComponentString substitle = new TextComponentString(str + " ");
         if (lst[0] > 0)
@@ -94,8 +94,8 @@ public class Time {
         substitle.appendText("!!.");
         List<EntityPlayerMP> playerMPS = playerList.getPlayers();
         for (EntityPlayerMP playerMP : playerMPS) {
-            Packet.sent(playerMP, title, SPacketTitle.Type.TITLE, 0, 100, 0);
-            Packet.sent(playerMP, substitle, SPacketTitle.Type.SUBTITLE, 0, 100, 0);
+            IPacket.sent(playerMP, title, SPacketTitle.Type.TITLE, 0, 100, 0);
+            IPacket.sent(playerMP, substitle, SPacketTitle.Type.SUBTITLE, 0, 100, 0);
         }
         return true;
     }
@@ -104,7 +104,7 @@ public class Time {
         int timeRemaining = getSubstractInSecond(timeTarget, getCurrentTime());
         if (!WARNING_TIME_LIST.contains(timeRemaining))
             return false;
-        int[] lst = Time.secondToTime(timeRemaining);
+        int[] lst = ITime.secondToTime(timeRemaining);
         TextComponentString text = new TextComponentString(TextFormatting.BOLD + "[" + prefix + "]  " + TextFormatting.RESET + str + " :");
         if (lst[0] > 0)
             text.appendSibling(new TextComponentString(" " + TextFormatting.RED + lst[0] + TextFormatting.RESET + " hours"));
@@ -123,7 +123,7 @@ public class Time {
         int timeRemaining = getSubstractInSecond(timeTarget, getCurrentTime());
         if (!WARNING_TIME_LIST.contains(timeRemaining))
             return false;
-        int[] lst = Time.secondToTime(timeRemaining);
+        int[] lst = ITime.secondToTime(timeRemaining);
         TextComponentString title = new TextComponentString(TextFormatting.BOLD + prefix);
         TextComponentString substitle = new TextComponentString(str + " " );
         if (lst[0] > 0)

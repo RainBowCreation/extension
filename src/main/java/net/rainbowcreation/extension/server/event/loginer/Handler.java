@@ -1,4 +1,4 @@
-package net.rainbowcreation.extension.server.event;
+package net.rainbowcreation.extension.server.event.loginer;
 
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.text.TextFormatting;
@@ -113,6 +113,7 @@ public class Handler {
   
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public static void onPlayerEvent(PlayerEvent event) {
+    //Main.LOGGER.info("PE ->" + event.getClass().getName());
     EntityPlayer entity = event.getEntityPlayer();
     switch (GenaralConfig.settings.MODE) {
       case ("lobby"): {
@@ -144,6 +145,7 @@ public class Handler {
   
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public static void onChatEvent(ServerChatEvent event) {
+    //Main.LOGGER.info("SCE");
     EntityPlayerMP entity = event.getPlayer();
     switch (GenaralConfig.settings.MODE) {
       case ("lobby"): {
@@ -158,6 +160,7 @@ public class Handler {
   
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public static void onTossEvent(ItemTossEvent event) {
+    //Main.LOGGER.info("ITE");
     EntityPlayer entity = event.getPlayer();
     switch (GenaralConfig.settings.MODE) {
       case ("lobby"): {
@@ -172,6 +175,7 @@ public class Handler {
   }
   
   private static void handleLivingEvents(LivingEvent event, Entity entity) {
+    //Main.LOGGER.info("LE");
     switch (GenaralConfig.settings.MODE) {
       case ("lobby"): {
         if (event.getEntity() instanceof EntityPlayer && event.isCancelable() && descriptors.containsKey(entity)) {
@@ -185,16 +189,18 @@ public class Handler {
   
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public static void onLivingAttackEvent(LivingAttackEvent event) {
-      switch (GenaralConfig.settings.MODE) {
+    //Main.LOGGER.info("LAE");
+    switch (GenaralConfig.settings.MODE) {
         case ("lobby"): {
           handleLivingEvents((LivingEvent) event, event.getEntity());
           break;
         }
-      }
+    }
   }
   
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public static void onLivingDeathEvent(LivingDeathEvent event) {
+    //Main.LOGGER.info("LDE");
     switch (GenaralConfig.settings.MODE) {
       case ("lobby"): {
         handleLivingEvents((LivingEvent) event, event.getEntity());
@@ -205,6 +211,7 @@ public class Handler {
   
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public static void onLivingEntityUseItemEvent(LivingEntityUseItemEvent event) {
+    //Main.LOGGER.info("LEUIE");
     switch (GenaralConfig.settings.MODE) {
       case ("lobby"): {
         handleLivingEvents((LivingEvent) event, event.getEntity());
@@ -215,6 +222,7 @@ public class Handler {
   
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public static void onLivingHealEvent(LivingHealEvent event) {
+    //Main.LOGGER.info("LHE");
     switch (GenaralConfig.settings.MODE) {
       case ("lobby"): {
         handleLivingEvents((LivingEvent) event, event.getEntity());
@@ -225,6 +233,7 @@ public class Handler {
   
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public static void onLivingHurtEvent(LivingHurtEvent event) {
+    //Main.LOGGER.info("LHE2");
     switch (GenaralConfig.settings.MODE) {
       case ("lobby"): {
         handleLivingEvents((LivingEvent) event, event.getEntity());
@@ -235,6 +244,7 @@ public class Handler {
   
   @SubscribeEvent(priority = EventPriority.HIGHEST)
   public static void onLivingSetTargetAttackEvent(LivingSetAttackTargetEvent event) {
+    //Main.LOGGER.info("LSATE");
     switch (GenaralConfig.settings.MODE) {
       case ("lobby"): {
         if (event.getTarget() instanceof EntityPlayer && descriptors.containsKey(event.getTarget()))

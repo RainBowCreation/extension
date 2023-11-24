@@ -2,7 +2,7 @@ package net.rainbowcreation.extension.server.command;
 
 import net.rainbowcreation.extension.server.Main;
 import net.rainbowcreation.extension.server.config.LoginerConfig;
-import net.rainbowcreation.extension.server.event.Handler;
+import net.rainbowcreation.extension.server.event.loginer.Handler;
 import net.rainbowcreation.extension.server.exception.BannedPlayerException;
 import net.rainbowcreation.extension.server.exception.InvalidEmailException;
 import net.rainbowcreation.extension.server.exception.LoginException;
