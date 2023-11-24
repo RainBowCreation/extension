@@ -13,6 +13,11 @@ import java.util.function.Predicate;
 import net.rainbowcreation.spongelobby.Spongelobby;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandException;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.network.ChannelBinding;
 import org.spongepowered.api.network.ChannelBuf;
@@ -22,7 +27,7 @@ import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-public class BungeeManager {
+public class BungeeManager implements CommandExecutor {
     private static DataListener listener = new DataListener();
 
     public static void init() {
@@ -86,6 +91,11 @@ public class BungeeManager {
     public static void serverIP(String server, Consumer<InetSocketAddress> consumer, Player reference) {
         getChannel().sendTo(reference, buffer -> buffer.writeUTF("ServerIP").writeUTF(server));
         listener.map.put(buffer -> (buffer.resetRead().readUTF().equals("ServerIP") && buffer.readUTF().equals(server)), buffer -> consumer.accept(new InetSocketAddress(buffer.readUTF(), buffer.readShort())));
+    }
+
+    @Override
+    public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+        return null;
     }
 
     public static class DataListener implements RawDataListener {

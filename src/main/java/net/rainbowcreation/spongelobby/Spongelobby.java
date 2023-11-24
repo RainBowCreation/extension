@@ -6,17 +6,15 @@ import net.rainbowcreation.spongelobby.queue.QManager;
 import net.rainbowcreation.spongelobby.queue.Qlist;
 import net.rainbowcreation.spongelobby.utils.Reference;
 import org.slf4j.Logger;
-import org.spongepowered.api.entity.EnderCrystal;
-import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.EntityType;
-import org.spongepowered.api.entity.living.complex.EnderDragon;
+import org.spongepowered.api.Game;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.MoveEntityEvent;
 import org.spongepowered.api.event.filter.cause.Root;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
-import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -25,7 +23,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.title.Title;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-import sun.font.LayoutPathImpl;
 
 import java.util.*;
 import java.util.List;
@@ -152,5 +149,11 @@ public class Spongelobby {
     }
 
     @Listener
-    //15:
+    public void onBackToSpawn(GameInitializationEvent event, @Root Player player, Game game) {
+        CommandSpec backspawnCmd = CommandSpec.builder()
+                .description(Text.of("Back To Spawn Command"))
+                .executor(new BungeeManager())
+                .build();
+        game.getCommandManager().register(this, backspawnCmd, "spawn", "testspawn");
+    }
 }
