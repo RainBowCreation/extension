@@ -138,8 +138,8 @@ public class Main {
     PlayerList playerList = server.getPlayerList();
     if (timeRemaining == 0) {
       int j = 0;
+      List<Entity> entityList = world.loadedEntityList;
       if (clearLag.CLEAR_ITEM) {
-        List<Entity> entityList = world.loadedEntityList;
         int amount = 0;
         for (Entity entity : entityList) {
           entity.setDead();
@@ -150,6 +150,7 @@ public class Main {
           playerList.sendMessage((ITextComponent) new TextComponentString(TextFormatting.BOLD + "[Clear Lag] " + TextFormatting.RESET + "Cleared " + TextFormatting.RED + amount + TextFormatting.RESET + " items!"));
         }
       }
+      IEntity.groupEntitiesByNameTag(world, entityList, 10);
       timeRemaining = staticTime;
       return;
     }

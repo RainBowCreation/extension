@@ -18,4 +18,17 @@ public class IString {
             header.append(c);
         return header.toString();
     }
+
+    public static String capitalizeFirstLetter(String name) {
+        if (name.contains(" ")) {
+            String[] split = name.split(" ");
+            StringBuilder sb = new StringBuilder();
+            for (String s : split) {
+                sb.append(capitalizeFirstLetter(s));
+                sb.append(" ");
+            }
+            return sb.toString();
+        }
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
+    }
 }

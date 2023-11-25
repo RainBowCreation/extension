@@ -17,6 +17,7 @@ public class RedStone {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRedstoneActivation(BlockEvent.NeighborNotifyEvent event) {
+        event.setCanceled(true);
         World world = event.getWorld();
         BlockPos pos = event.getPos();
 
