@@ -4,10 +4,13 @@ package net.rainbowcreation.extension.server.utils;
 import jdk.jfr.Frequency;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
+import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -82,6 +85,10 @@ public class IEntity {
         }
     }
 
+    public static boolean isStacked(Entity entity) {
+        return isChild(entity) || isRidable(entity) || isInLove(entity);
+    }
+
     public static boolean isChild(Entity entity) {
         if (entity instanceof EntityAgeable) {
             EntityAgeable ageable = (EntityAgeable) entity;
@@ -94,7 +101,80 @@ public class IEntity {
         if (entity instanceof EntityLiving) {
             if (entity instanceof EntityHorse)
                 return true;
+            // future ridable
         }
         return false;
+    }
+
+    public static boolean isInLove(Entity entity) {
+        if (entity instanceof EntityAnimal) {
+            EntityAnimal animal = (EntityAnimal) entity;
+            return animal.isInLove();
+        }
+        return false;
+    }
+
+    public static String getType(Entity entity) {
+        ResourceLocation entityLocation = EntityList.getKey(entity.getClass());
+        String entityName = entityLocation != null ? entityLocation.toString() : "";
+        String[] split = entityName.split(":");
+        String entityDisplayName = split.length > 1 ? split[1] : split[0];
+        return IString.capitalizeFirstLetter(entityDisplayName);
+    }
+
+    public static Entity setLoved(Entity entity) {
+        if (entity instanceof EntityAnimal) {
+            EntityAnimal animal = (EntityAnimal) entity;
+            animal.setInLove(null);
+        }
+        return entity;
+    }
+
+    public static int getCount(Entity entity) {
+        String nametag = entity.getCustomNameTag();
+        StringBuilder sb = new StringBuilder(nametag);
+        if (nametag.contains(" X")) {
+            return Integer.parseInt(nametag.substring(sb.lastIndexOf(" X") + 2));
+        }
+        return 1;
+    }
+
+
+    public static Entity setUpEntity(Entity entity) {
+        if (IEntity.isStacked(entity)) {
+            return entity;
+        }
+        World world = entity.getEntityWorld();
+            /*
+            if (Iterables.size(entity.getArmorInventoryList()) != 0) {
+                Main.LOGGER.info(entity.getName() + Iterables.size(entity.getArmorInventoryList()));
+                return;
+            }
+             */
+        String type = IEntity.getType(entity);
+        // Check the number of entities in the chunk
+        List<Entity> entitys = world.getEntitiesWithinAABB(entity.getClass(), entity.getEntityBoundingBox().grow(16.0D));
+        int entityCount = 1;
+        for (Entity entityc : entitys) {
+            if (IEntity.isStacked(entityc))
+                continue;
+                /*
+                if (Iterables.size(entityc.getArmorInventoryList()) != 0)
+                    continue;
+                 */
+            switch (type) {
+                case ("Sheep"): {
+                    if (((EntitySheep) entity).getFleeceColor() != ((EntitySheep) entityc).getFleeceColor())
+                        continue;
+                    break;
+                }
+            }
+            entityCount+= IEntity.getCount(entityc);
+            entityc.setDead();
+        }
+        if (entityCount > 0) {
+            entity.setCustomNameTag(type + " X" + entityCount);
+        }
+        return entity;
     }
 }

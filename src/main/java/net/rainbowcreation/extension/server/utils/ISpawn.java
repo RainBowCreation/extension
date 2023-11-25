@@ -2,10 +2,14 @@ package net.rainbowcreation.extension.server.utils;
 
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -67,6 +71,46 @@ public class ISpawn {
             world.addWeatherEffect(new net.minecraft.entity.effect.EntityLightningBolt(world, pos.getX(), pos.getY(), pos.getZ(), false));
         }
     }
+
+    public static void spawnCloneEntity(EntityLivingBase originalEntity) {
+        World world = originalEntity.world;
+
+        // Check if the world is not null
+        if (world != null && !world.isRemote) {
+            // Create a new instance of the same class as the original entity
+            EntityLivingBase clonedEntity = cloneEntityInstance(originalEntity);
+
+            // Check if cloning was successful
+            if (clonedEntity != null) {
+                // Set the position of the cloned entity to the same as the original entity
+                clonedEntity.setPosition(originalEntity.posX, originalEntity.posY, originalEntity.posZ);
+                // Spawn the cloned entity into the world
+                world.spawnEntity(clonedEntity);
+            }
+        }
+    }
+
+    // Helper function to create a new instance of the same class as the original entity
+    public static EntityLivingBase cloneEntityInstance(EntityLivingBase originalEntity) {
+        Class<? extends EntityLivingBase> entityClass = originalEntity.getClass();
+
+        try {
+            // Create a new instance of the entity class
+            EntityLivingBase clonedEntity = entityClass.getConstructor(World.class).newInstance(originalEntity.world);
+
+            // Copy NBT data from the original entity to the cloned entity
+            NBTTagCompound entityNBT = new NBTTagCompound();
+            originalEntity.writeEntityToNBT(entityNBT);
+            clonedEntity.readEntityFromNBT(entityNBT);
+
+            return clonedEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     /*
     public static void spawnExplosion(World world, BlockPos pos) {
         spawnExplosion(world, pos,3.0f,true);
