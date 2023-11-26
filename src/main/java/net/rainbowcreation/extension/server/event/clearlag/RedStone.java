@@ -15,6 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.rainbowcreation.extension.server.utils.Reference;
 
+import static net.rainbowcreation.extension.server.config.RedstoneBlockConfig.redstoneBlock;
 
 @Mod.EventBusSubscriber(modid = Reference.MODID)
 public class RedStone {
@@ -23,6 +24,8 @@ public class RedStone {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRedstoneActivation(BlockEvent.NeighborNotifyEvent event) {
+        if (!redstoneBlock.DESTROY_BLOCK_WHEN_POWERED)
+            return;
         World world = event.getWorld();
         BlockPos pos = event.getPos();
         if (world.isBlockPowered(pos)) {
@@ -36,6 +39,8 @@ public class RedStone {
 
     @SubscribeEvent
     public static void onPlayerPlaceBlock(BlockEvent.PlaceEvent event) {
+        if (!redstoneBlock.ENABLE)
+            return;
         EntityPlayer player = event.getPlayer();
         IBlockState blockState = event.getPlacedBlock();
         // Check if the player is right-clicking to place a block
