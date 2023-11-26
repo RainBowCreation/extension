@@ -56,7 +56,6 @@ public class Main {
   private static int tick = Tick;
   private static int[] M_TIME_TO_1;
   private static TextComponentString MAINTENANCE_TEXT = new TextComponentString(TextFormatting.RED + "Daily Maintenance " + TextFormatting.RESET);
-  public static Map<Long, Integer> redstoneCounts = new HashMap<>();
   private Handler handler;
   
   private IDataSourceStrategy dataSourceStrategy;
@@ -130,9 +129,6 @@ public class Main {
     int[] time = ITime.getCurrentTime();
     if (time[2] == timePrevious[2])
       return;
-    timePrevious = time;
-    if (clearLag.REDSTON_LIMIT > 0)
-      redstoneCounts.clear();
     World world = event.world;
     MinecraftServer server = world.getMinecraftServer();
     PlayerList playerList = server.getPlayerList();
@@ -157,7 +153,7 @@ public class Main {
     switch (settings.MODE) {
       case ("server"): {
         if (clearLag.CLEAR_ITEM)
-          ITime.alert(timeRemaining, "Clear Lag", "Items&XPOrb will be cleared in", playerList);
+          ITime.alert(timeRemaining, "Clear Lag", "Items will be cleared in", playerList);
         if (settings.MAINTENANCE) {
           if (time[0] != timePrevious[0]) {
             playerList.sendMessage(new TextComponentString(TextFormatting.BOLD + "[Maintenance Scheduler] " + TextFormatting.RESET).appendSibling(MAINTENANCE_TEXT));
@@ -199,6 +195,7 @@ public class Main {
       }
     }
     timeRemaining-= ITime.getSubstractInSecond(time, timePrevious);
+    timePrevious = time;
   }
 
   @SubscribeEvent

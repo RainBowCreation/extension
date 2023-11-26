@@ -28,8 +28,5 @@ public class ClearLagConfig {
 
         @Comment({"Limit tiles entity can be cleared per chunk default is 100 set it to 0 to disable"})
         public int TILE_LIMIT = 100;
-
-        @Comment({"Limit redstone actions per second default is 20 set it to 0 to disable"})
-        public int REDSTON_LIMIT = 100;
     }
 }

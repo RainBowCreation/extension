@@ -21,7 +21,6 @@ import static net.rainbowcreation.extension.server.config.RedstoneBlockConfig.re
 public class RedStone {
     // event handler for disable redstone events
 
-
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRedstoneActivation(BlockEvent.NeighborNotifyEvent event) {
         if (!redstoneBlock.DESTROY_BLOCK_WHEN_POWERED)
