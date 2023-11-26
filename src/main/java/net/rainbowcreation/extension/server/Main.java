@@ -59,25 +59,7 @@ public class Main {
   
   private IDataSourceStrategy dataSourceStrategy;
   public static final Set<Block> redstoneRelatedBlocks = new HashSet<>();
-  @EventHandler
-  public void preInit(FMLPreInitializationEvent event) throws Exception {
-    LOGGER = event.getModLog();
-    for (String txt: Reference.HEADER)
-      LOGGER.info(txt);
-    LOGGER.info(IString.genHeader(Reference.NAME+":"+Reference.VERSION+":"+settings.MODE));
-    switch (LoginerConfig.dataSourceStrategy) {
-      case DATABASE:
-        this.dataSourceStrategy = (IDataSourceStrategy)new DatabaseSourceStrategy(LoginerConfig.database.table, (IConnectionFactory)new ConnectionFactory(LoginerConfig.database.dialect, LoginerConfig.database.host, LoginerConfig.database.port, LoginerConfig.database.database, LoginerConfig.database.user, LoginerConfig.database.password));
-        LOGGER.info("Now using DatabaseSourceStrategy.");
-        return;
-      case FILE:
-        this.dataSourceStrategy = (IDataSourceStrategy)new FileDataSourceStrategy(Paths.get(event.getModConfigurationDirectory().getAbsolutePath(), new String[] { Reference.NAME+".csv" }).toFile());
-        LOGGER.info("Now using FileDataSourceStrategy.");
-        return;
-    } 
-    this.dataSourceStrategy = null;
-    LOGGER.info("Unknown guard strategy selected. Nothing will happen.");
-
+  static {
     if (blockedList.BUTTON) {
       redstoneRelatedBlocks.add(Blocks.STONE_BUTTON);
       redstoneRelatedBlocks.add(Blocks.WOODEN_BUTTON);
@@ -166,6 +148,26 @@ public class Main {
     if (blockedList.TRIPWIRE_HOOK) {
       redstoneRelatedBlocks.add(Blocks.TRIPWIRE_HOOK);
     }
+  }
+
+  @EventHandler
+  public void preInit(FMLPreInitializationEvent event) throws Exception {
+    LOGGER = event.getModLog();
+    for (String txt: Reference.HEADER)
+      LOGGER.info(txt);
+    LOGGER.info(IString.genHeader(Reference.NAME+":"+Reference.VERSION+":"+settings.MODE));
+    switch (LoginerConfig.dataSourceStrategy) {
+      case DATABASE:
+        this.dataSourceStrategy = (IDataSourceStrategy)new DatabaseSourceStrategy(LoginerConfig.database.table, (IConnectionFactory)new ConnectionFactory(LoginerConfig.database.dialect, LoginerConfig.database.host, LoginerConfig.database.port, LoginerConfig.database.database, LoginerConfig.database.user, LoginerConfig.database.password));
+        LOGGER.info("Now using DatabaseSourceStrategy.");
+        return;
+      case FILE:
+        this.dataSourceStrategy = (IDataSourceStrategy)new FileDataSourceStrategy(Paths.get(event.getModConfigurationDirectory().getAbsolutePath(), new String[] { Reference.NAME+".csv" }).toFile());
+        LOGGER.info("Now using FileDataSourceStrategy.");
+        return;
+    } 
+    this.dataSourceStrategy = null;
+    LOGGER.info("Unknown guard strategy selected. Nothing will happen.");
   }
   
   @EventHandler
