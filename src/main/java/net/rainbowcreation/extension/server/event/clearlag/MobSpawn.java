@@ -47,10 +47,10 @@ public class MobSpawn {
             if (entityCount >= clearLag.MONSTER_LIMIT) {
                 event.setCanceled(true);
             }
-        }else if (entity.isCreatureType(EnumCreatureType.CREATURE, false))
-            IEntity.setUpEntity(entity);
+        }else if (entity.isCreatureType(EnumCreatureType.CREATURE, false)) {}
+            //IEntity.setUpEntity(entity);
     }
-
+    /*
     @SubscribeEvent
     public static void onEntityFeed(PlayerInteractEvent.EntityInteract event) {
         Entity entity = event.getTarget();
@@ -62,9 +62,11 @@ public class MobSpawn {
             EntityLivingBase clone = ISpawn.cloneEntityInstance(animal);
             if (clone instanceof EntityAnimal) {
                 ((EntityAnimal) clone).setInLove(null);
+                Main.LOGGER.info(animal.getName() + " is in love!");
             }
             entity.world.spawnEntity(clone);
             //ISpawn.spawnCustomNamedEntity(entity, type + " X2");
         }
     }
+    */
 }

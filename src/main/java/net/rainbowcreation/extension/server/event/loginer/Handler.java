@@ -2,6 +2,7 @@ package net.rainbowcreation.extension.server.event.loginer;
 
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.text.TextFormatting;
+import net.rainbowcreation.extension.server.Main;
 import net.rainbowcreation.extension.server.config.GenaralConfig;
 import net.rainbowcreation.extension.server.config.LoginerConfig;
 import net.rainbowcreation.extension.server.model.PlayerDescriptor;
