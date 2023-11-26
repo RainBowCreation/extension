@@ -5,9 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="47a66d6c-5c9d-4887-bc31-bb6cc56a0104" name="Changes" comment="0">
-      <change beforePath="$PROJECT_DIR$/.idea/modules/extension.api.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/extension.api.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/extension.main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/extension.main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules/extension.test.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules/extension.test.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/rainbowcreation/extension/server/event/clearlag/MobSpawn.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rainbowcreation/extension/server/event/clearlag/MobSpawn.java" afterDir="false" />
     </list>
@@ -123,7 +120,15 @@
       <option name="project" value="LOCAL" />
       <updated>1700932139533</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="0">
+      <option name="closed" value="true" />
+      <created>1700981159678</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1700981159678</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
