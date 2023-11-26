@@ -55,17 +55,16 @@ public class MobSpawn {
     public static void onEntityFeed(PlayerInteractEvent.EntityInteract event) {
         Entity entity = event.getTarget();
         if (IEntity.isInLove(entity)) {
+            event.setCanceled(true);
             Main.LOGGER.info(entity.getName() + " is in love!");
             String type = IEntity.getType(entity);
-            if (entity instanceof EntityAnimal) {
-                EntityLivingBase animal = (EntityLivingBase) entity;
-                EntityLivingBase clone = ISpawn.cloneEntityInstance(animal);
-                if (clone instanceof EntityAnimal) {
-                    ((EntityAnimal) clone).setInLove(null);
-                }
-                entity.world.spawnEntity(clone);
-                //ISpawn.spawnCustomNamedEntity(entity, type + " X2");
+            EntityLivingBase animal = (EntityLivingBase) entity;
+            EntityLivingBase clone = ISpawn.cloneEntityInstance(animal);
+            if (clone instanceof EntityAnimal) {
+                ((EntityAnimal) clone).setInLove(null);
             }
+            entity.world.spawnEntity(clone);
+            //ISpawn.spawnCustomNamedEntity(entity, type + " X2");
         }
     }
 }
