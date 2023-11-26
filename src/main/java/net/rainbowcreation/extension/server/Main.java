@@ -134,19 +134,13 @@ public class Main {
     PlayerList playerList = server.getPlayerList();
     if (timeRemaining == 0) {
       int j = 0;
-      List<Entity> entityList = world.loadedEntityList;
       if (clearLag.CLEAR_ITEM) {
-        int amount = 0;
-        for (Entity entity : entityList) {
-          entity.setDead();
-          amount++;
-        }
+        int amount = world.loadedEntityList.size();
         server.getCommandManager().executeCommand(server ,"kill @e[type=item] @e[type=xp_orb]");
         if (settings.MODE.equals("server")) {
           playerList.sendMessage((ITextComponent) new TextComponentString(TextFormatting.BOLD + "[Clear Lag] " + TextFormatting.RESET + "Cleared " + TextFormatting.RED + amount + TextFormatting.RESET + " items!"));
         }
       }
-      IEntity.groupEntitiesByNameTag(world, entityList, 10);
       timeRemaining = staticTime;
       return;
     }
