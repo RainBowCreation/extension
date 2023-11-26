@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="47a66d6c-5c9d-4887-bc31-bb6cc56a0104" name="Changes" comment="fix clearlag crash">
+    <list default="true" id="47a66d6c-5c9d-4887-bc31-bb6cc56a0104" name="Changes" comment="fix torchbug">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/rainbowcreation/extension/server/event/clearlag/RedStone.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/rainbowcreation/extension/server/event/clearlag/RedStone.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -175,7 +174,15 @@
       <option name="project" value="LOCAL" />
       <updated>1701027758746</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="fix torchbug">
+      <option name="closed" value="true" />
+      <created>1701029709793</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1701029709793</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -183,6 +190,7 @@
     <MESSAGE value="Added redstoneblock" />
     <MESSAGE value="fix wrong counting bug" />
     <MESSAGE value="fix clearlag crash" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix clearlag crash" />
+    <MESSAGE value="fix torchbug" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix torchbug" />
   </component>
 </project>
