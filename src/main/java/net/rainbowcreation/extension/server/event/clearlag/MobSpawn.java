@@ -47,8 +47,14 @@ public class MobSpawn {
             if (entityCount >= clearLag.MONSTER_LIMIT) {
                 event.setCanceled(true);
             }
-        }else if (entity.isCreatureType(EnumCreatureType.CREATURE, false)) {}
-            //IEntity.setUpEntity(entity);
+        } else if (entity.isCreatureType(EnumCreatureType.CREATURE, false)) {
+            int entityCount = world.getEntitiesWithinAABB(entity.getClass(), entity.getEntityBoundingBox().grow(16.0D)).size();
+            // If the entity count exceeds the limit, cancel the spawn event
+            if (entityCount * 2 >= clearLag.MONSTER_LIMIT) {
+                event.setCanceled(true);
+                //IEntity.setUpEntity(entity);
+            }
+        }
     }
     /*
     @SubscribeEvent

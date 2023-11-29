@@ -1,5 +1,7 @@
 package net.rainbowcreation.extension.server.event.requiemsleep;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
@@ -7,28 +9,42 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.rainbowcreation.extension.server.Main;
+import net.rainbowcreation.extension.server.utils.IChunk;
+import net.rainbowcreation.extension.server.utils.IEntity;
 import net.rainbowcreation.extension.server.utils.Reference;
+
+
+import java.util.List;
 
 import static net.rainbowcreation.extension.server.config.RequiemConfig.requiem;
 @Mod.EventBusSubscriber(modid = Reference.MODID)
 public class Requiem {
     public static int speed = 1;
-    @SubscribeEvent
+    public static long acceleration = 1;
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onSleep(PlayerSleepInBedEvent event) {
         EntityPlayer player = event.getEntityPlayer();
         World world = player.getEntityWorld();
-        Main.LOGGER.info(getTime(world.getWorldTime()));
-        if (getTime(world.getWorldTime()) < 12541)
+        if (world.provider.getDimension() != 0)
             return;
-        Main.sleepList.add(player);
+        if (world.isDaytime())
+            return;
+        if (world.isThundering())
+            return;
+        List<Entity> entities = IEntity.getNearbyEntities(player, EntityMob.class, 10);
+        if (!entities.isEmpty())
+            return;
         MinecraftServer server = world.getMinecraftServer();
+        Main.sleepList.add(player);
         int percent = calculatePercent(Main.sleepList.size(), server.getCurrentPlayerCount());
         calculateSpeed(percent);
-        Main.LOGGER.info(speed);
+        calculateAcceleration();
         server.getPlayerList().sendMessage(new TextComponentString(TextFormatting.BOLD + "[Requiem Sleep] ").appendSibling(player.getDisplayName()).appendSibling(new TextComponentString(" is sleeping " + TextFormatting.RED + Main.sleepList.size() + "/" + server.getCurrentPlayerCount() + " " + percent + "%")));
     }
 
@@ -40,9 +56,10 @@ public class Requiem {
         MinecraftServer server = world.getMinecraftServer();
         int percent = calculatePercent(Main.sleepList.size(), server.getCurrentPlayerCount());
         calculateSpeed(percent);
+        calculateAcceleration();
         Main.LOGGER.info(speed);
         Main.LOGGER.info(getTime(world.getWorldTime()));
-        if (getTime(world.getWorldTime()) < 12541)
+        if (world.isDaytime())
             return;
         server.getPlayerList().sendMessage(new TextComponentString(TextFormatting.BOLD + "[Requiem Sleep] ").appendSibling(player.getDisplayName()).appendSibling(new TextComponentString(" is no longer sleeping " + TextFormatting.RED + Main.sleepList.size() + "/" + server.getCurrentPlayerCount() + " " + percent + "%")));
     }
@@ -62,7 +79,7 @@ public class Requiem {
         if (percent >= requiem.threshold)
             speed = 10;
         else
-            speed = (int) ((percent * 100)  / (double) requiem.threshold);
+            speed = (int) ((percent * 10)  / (double) requiem.threshold);
         return speed;
     }
 
@@ -74,15 +91,16 @@ public class Requiem {
         return calculateAcceleration(speed);
     }
     private static long calculateAcceleration(int speed) {
-        if (speed == 10)
+        if (speed == 1)
             return -1;
-        return (long) (30 * speed);
+        acceleration = 40 * (long) speed;
+        return acceleration;
     }
 
     public static long getNextTime(long currentTime, long acceleration) {
         if (acceleration == -1)
-            return 0;
-        return currentTime + acceleration;
+            return 0L;
+        return getTime(currentTime + acceleration);
     }
     public static long getNextTimeByspeed(long currentTime, int speed) {
         return getNextTime(currentTime, calculateAcceleration(speed));

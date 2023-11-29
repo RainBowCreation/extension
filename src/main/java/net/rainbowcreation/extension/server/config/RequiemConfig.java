@@ -12,7 +12,7 @@ public class RequiemConfig {
         @Config.Comment({"Enabled?"})
         public boolean ENABLE = true;
 
-        @Config.Comment({"Requiem Threshold in % default 100%"})
-        public int threshold = 100;
+        @Config.Comment({"Requiem Threshold in % default 33%"})
+        public int threshold = 33;
     }
 }

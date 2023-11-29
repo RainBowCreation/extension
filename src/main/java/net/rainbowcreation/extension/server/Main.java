@@ -217,19 +217,9 @@ public class Main {
 
   @SubscribeEvent
   public static void worldTick(TickEvent.WorldTickEvent event) {
-    if (!sleepList.isEmpty()) {
-      World world = event.world;
-      long nextTime = Requiem.getNextTime(Requiem.getTime(world.getWorldTime()));
-      if (nextTime == 0)
-        sleepList = new ArrayList<EntityPlayer>();
-      MinecraftServer server = world.getMinecraftServer();
-      if (server == null)
-        return;
-      PlayerList playerList = server.getPlayerList();
-      server.getCommandManager().executeCommand(server ,"time set " + nextTime);
-      if (nextTime == 0)
-        playerList.sendMessage(new TextComponentString(TextFormatting.BOLD + "[Requiem Sleep] " + TextFormatting.RESET + " good morning :) "));
-    }
+    World world = event.world;
+    if (world.provider.getDimension() != 0)
+      return;
     if (tick > 0) {
       tick--;
       return;
@@ -238,9 +228,17 @@ public class Main {
     int[] time = ITime.getCurrentTime();
     if (time[2] == timePrevious[2])
       return;
-    World world = event.world;
     MinecraftServer server = world.getMinecraftServer();
     PlayerList playerList = server.getPlayerList();
+    if (!sleepList.isEmpty()) {
+      Main.LOGGER.info("World time is: " + world.getWorldTime());
+      world.setWorldTime(world.getWorldTime() + Requiem.acceleration);
+      //server.getCommandManager().executeCommand(server ,"time add " + Requiem.acceleration);
+      if (world.isDaytime()) {
+        sleepList = new ArrayList<EntityPlayer>();
+        playerList.sendMessage(new TextComponentString(TextFormatting.BOLD + "[Requiem Sleep] " + TextFormatting.RESET + "good morning :) "));
+      }
+    }
     if (timeRemaining == 0) {
       end_counting = 0;
       int j = 0;
