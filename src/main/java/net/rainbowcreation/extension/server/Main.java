@@ -231,7 +231,6 @@ public class Main {
     MinecraftServer server = world.getMinecraftServer();
     PlayerList playerList = server.getPlayerList();
     if (!sleepList.isEmpty()) {
-      Main.LOGGER.info("World time is: " + world.getWorldTime());
       world.setWorldTime(world.getWorldTime() + Requiem.acceleration);
       //server.getCommandManager().executeCommand(server ,"time add " + Requiem.acceleration);
       if (world.isDaytime()) {

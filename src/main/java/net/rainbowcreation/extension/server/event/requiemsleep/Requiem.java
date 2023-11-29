@@ -57,8 +57,6 @@ public class Requiem {
         int percent = calculatePercent(Main.sleepList.size(), server.getCurrentPlayerCount());
         calculateSpeed(percent);
         calculateAcceleration();
-        Main.LOGGER.info(speed);
-        Main.LOGGER.info(getTime(world.getWorldTime()));
         if (world.isDaytime())
             return;
         server.getPlayerList().sendMessage(new TextComponentString(TextFormatting.BOLD + "[Requiem Sleep] ").appendSibling(player.getDisplayName()).appendSibling(new TextComponentString(" is no longer sleeping " + TextFormatting.RED + Main.sleepList.size() + "/" + server.getCurrentPlayerCount() + " " + percent + "%")));
