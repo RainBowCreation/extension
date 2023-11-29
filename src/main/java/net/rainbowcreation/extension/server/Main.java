@@ -1,6 +1,8 @@
 package net.rainbowcreation.extension.server;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.network.play.server.SPacketTitle;
@@ -15,6 +17,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.rainbowcreation.extension.server.config.GenaralConfig;
 import net.rainbowcreation.extension.server.event.loginer.Handler;
+import net.rainbowcreation.extension.server.event.requiemsleep.Requiem;
+import net.rainbowcreation.extension.server.model.Player;
 import net.rainbowcreation.extension.server.utils.*;
 import net.rainbowcreation.extension.server.command.LoggedCommand;
 import net.rainbowcreation.extension.server.command.LoginCommand;
@@ -56,6 +60,8 @@ public class Main {
   private static int[] M_TIME_TO_1;
   private static TextComponentString MAINTENANCE_TEXT = new TextComponentString(TextFormatting.RED + "Daily Maintenance " + TextFormatting.RESET);
   private Handler handler;
+  public static int end_counting = 0;
+  public static List<EntityPlayer> sleepList = new ArrayList<EntityPlayer>();
   
   private IDataSourceStrategy dataSourceStrategy;
   public static final Set<Block> redstoneRelatedBlocks = new HashSet<>();
@@ -211,6 +217,19 @@ public class Main {
 
   @SubscribeEvent
   public static void worldTick(TickEvent.WorldTickEvent event) {
+    if (!sleepList.isEmpty()) {
+      World world = event.world;
+      long nextTime = Requiem.getNextTime(Requiem.getTime(world.getWorldTime()));
+      if (nextTime == 0)
+        sleepList = new ArrayList<EntityPlayer>();
+      MinecraftServer server = world.getMinecraftServer();
+      if (server == null)
+        return;
+      PlayerList playerList = server.getPlayerList();
+      server.getCommandManager().executeCommand(server ,"time set " + nextTime);
+      if (nextTime == 0)
+        playerList.sendMessage(new TextComponentString(TextFormatting.BOLD + "[Requiem Sleep] " + TextFormatting.RESET + " good morning :) "));
+    }
     if (tick > 0) {
       tick--;
       return;
@@ -223,6 +242,7 @@ public class Main {
     MinecraftServer server = world.getMinecraftServer();
     PlayerList playerList = server.getPlayerList();
     if (timeRemaining == 0) {
+      end_counting = 0;
       int j = 0;
       if (clearLag.CLEAR_ITEM) {
         int amount = world.loadedEntityList.size();
@@ -231,6 +251,8 @@ public class Main {
           playerList.sendMessage((ITextComponent) new TextComponentString(TextFormatting.BOLD + "[Clear Lag] " + TextFormatting.RESET + "Cleared " + TextFormatting.RED + amount + TextFormatting.RESET + " items!"));
         }
       }
+      for (EntityPlayerMP player : playerList.getPlayers())
+        ITeam.joinTeam(server, player.getName(), "Non-Combatant");
       timeRemaining = staticTime;
       return;
     }

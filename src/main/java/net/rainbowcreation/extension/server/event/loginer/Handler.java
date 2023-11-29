@@ -2,9 +2,11 @@ package net.rainbowcreation.extension.server.event.loginer;
 
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.text.TextFormatting;
+import net.rainbowcreation.extension.server.event.corrupted.handler;
 import net.rainbowcreation.extension.server.Main;
 import net.rainbowcreation.extension.server.config.GenaralConfig;
 import net.rainbowcreation.extension.server.config.LoginerConfig;
+import net.rainbowcreation.extension.server.event.requiemsleep.Requiem;
 import net.rainbowcreation.extension.server.model.PlayerDescriptor;
 import net.rainbowcreation.extension.server.model.PlayerPos;
 import java.util.HashMap;
@@ -39,6 +41,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.rainbowcreation.extension.server.utils.ITeam;
 import net.rainbowcreation.extension.server.utils.Reference;
 
 @EventBusSubscriber
@@ -85,6 +88,10 @@ public class Handler {
         player.sendMessage(new TextComponentString(TextFormatting.BOLD + "[Auth] " + TextFormatting.RESET + "please login or register\n/login <password>\nor\n/register <password> <password>"));
         break;
       }
+      case ("server"): {
+        handler.onJoin(event);
+        break;
+      }
     }
   }
   
@@ -93,6 +100,10 @@ public class Handler {
     switch (GenaralConfig.settings.MODE) {
       case ("lobby"): {
         logged.remove(event.player);
+        break;
+      }
+      case ("server"): {
+        Requiem.onPlayerLeft(event);
         break;
       }
     }
@@ -207,6 +218,10 @@ public class Handler {
         handleLivingEvents((LivingEvent) event, event.getEntity());
         break;
       }
+      case ("server"): {
+        handler.onDeath(event);
+        break;
+      }
     }
   }
   
@@ -238,6 +253,10 @@ public class Handler {
     switch (GenaralConfig.settings.MODE) {
       case ("lobby"): {
         handleLivingEvents((LivingEvent) event, event.getEntity());
+        break;
+      }
+      case ("server"): {
+        handler.onHurt(event);
         break;
       }
     }
