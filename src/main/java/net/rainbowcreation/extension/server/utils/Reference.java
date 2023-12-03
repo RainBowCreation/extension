@@ -22,6 +22,6 @@ public class Reference {
             "#                                                                                    #"); //long = 86
 
     public static final SPacketTitle PACKET_TITLE = new SPacketTitle(SPacketTitle.Type.TITLE, new TextComponentString("Welcome to") , 20, 120, 20);
-    public static final SPacketTitle PACKET_SUB_TITLE = new SPacketTitle(SPacketTitle.Type.SUBTITLE, new TextComponentString("play." + TextFormatting.GREEN + "R" + TextFormatting.AQUA + "a" + TextFormatting.LIGHT_PURPLE + "i" + TextFormatting.RED + "n" + TextFormatting.YELLOW + "B" + TextFormatting.GREEN + "o" + TextFormatting.AQUA + "w" + TextFormatting.RESET + "Creation.net"), 20, 120, 20);
+    public static final SPacketTitle PACKET_SUB_TITLE = new SPacketTitle(SPacketTitle.Type.SUBTITLE, new TextComponentString("rl." + TextFormatting.GREEN + "R" + TextFormatting.AQUA + "a" + TextFormatting.LIGHT_PURPLE + "i" + TextFormatting.RED + "n" + TextFormatting.YELLOW + "B" + TextFormatting.GREEN + "o" + TextFormatting.AQUA + "w" + TextFormatting.RESET + "Creation.net"), 20, 120, 20);
     public static final SPacketTitle PACKET_MAINTENANCE_COMPLETE = new SPacketTitle(SPacketTitle.Type.TITLE, new TextComponentString(TextFormatting.RED + "Daily Maintenance " + TextFormatting.GREEN + "Completed!!") , 10, 200, 10);
 }

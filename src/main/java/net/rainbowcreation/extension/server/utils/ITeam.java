@@ -9,6 +9,6 @@ public class ITeam {
         if (Main.blacklist.contains(playername)) {
             return;
         }
-        server.getCommandManager().executeCommand(server ,"scoreboard teams join " + team + " " + playername);
+        server.getCommandManager().executeCommand(server ,"scoreboard teams join " + team + " "+ playername + " ");
     }
 }
