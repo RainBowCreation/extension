@@ -50,7 +50,7 @@ public class PlayersDAO implements IPlayersDAO<IPlayer> {
     this.columns.put("email", "email");
     this.columns.put("banned", "banned");
     this.columns.put("password", "password");
-    this.columns.put("username", "username");
+    this.columns.put("username", "realname");
     this.columns.put("uuid", "uuid");
     checkTable();
   }
