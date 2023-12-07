@@ -300,10 +300,4 @@ public class Main {
     timeRemaining-= ITime.getSubstractInSecond(time, timePrevious);
     timePrevious = time;
   }
-
-  @SubscribeEvent
-  public void onPlace(BlockEvent.PlaceEvent event) {
-    Main.LOGGER.info("placed");
-    Main.LOGGER.info(event.getPlacedBlock());
-  }
 }
