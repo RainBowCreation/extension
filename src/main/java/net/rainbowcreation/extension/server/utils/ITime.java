@@ -79,7 +79,9 @@ public class ITime {
         if (lst[2] > 0)
             text.appendSibling(new TextComponentString(" " + TextFormatting.RED + lst[2] + TextFormatting.RESET + " seconds"));
         text.appendText("!!.");
-        playerList.sendMessage(text);
+        //playerList.sendMessage(text);
+        for (EntityPlayerMP playerMP : playerList.getPlayers())
+            IPacket.sent(playerMP, text, SPacketTitle.Type.ACTIONBAR, 20, 120, 20);
         return true;
     }
 

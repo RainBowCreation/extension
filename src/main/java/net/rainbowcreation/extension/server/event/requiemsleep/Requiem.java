@@ -3,6 +3,8 @@ package net.rainbowcreation.extension.server.event.requiemsleep;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -17,6 +19,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.rainbowcreation.extension.server.Main;
 import net.rainbowcreation.extension.server.utils.IChunk;
 import net.rainbowcreation.extension.server.utils.IEntity;
+import net.rainbowcreation.extension.server.utils.IPacket;
 import net.rainbowcreation.extension.server.utils.Reference;
 
 
@@ -45,7 +48,11 @@ public class Requiem {
         int percent = calculatePercent(Main.sleepList.size(), server.getCurrentPlayerCount());
         calculateSpeed(percent);
         calculateAcceleration();
-        server.getPlayerList().sendMessage(new TextComponentString(TextFormatting.BOLD + "[Requiem Sleep] ").appendSibling(player.getDisplayName()).appendSibling(new TextComponentString(" is sleeping " + TextFormatting.RED + Main.sleepList.size() + "/" + server.getCurrentPlayerCount() + " " + percent + "%")));
+        TextComponentString textComponents = (TextComponentString) (new TextComponentString(TextFormatting.BOLD + "[Requiem Sleep] ").appendSibling(player.getDisplayName()).appendSibling(new TextComponentString(" is sleeping " + TextFormatting.RED + Main.sleepList.size() + "/" + server.getCurrentPlayerCount() + " " + percent + "%")));
+        //server.getPlayerList().sendMessage(new TextComponentString(TextFormatting.BOLD + "[Requiem Sleep] ").appendSibling(player.getDisplayName()).appendSibling(new TextComponentString(" is sleeping " + TextFormatting.RED + Main.sleepList.size() + "/" + server.getCurrentPlayerCount() + " " + percent + "%")));
+        for (EntityPlayerMP playerMP : server.getPlayerList().getPlayers()) {
+            IPacket.sent(playerMP, textComponents, SPacketTitle.Type.ACTIONBAR, 20, 120, 20);
+        }
     }
 
     @SubscribeEvent

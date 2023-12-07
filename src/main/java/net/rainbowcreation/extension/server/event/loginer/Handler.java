@@ -1,5 +1,7 @@
 package net.rainbowcreation.extension.server.event.loginer;
 
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.text.TextFormatting;
 import net.rainbowcreation.extension.server.event.corrupted.handler;
@@ -41,6 +43,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.rainbowcreation.extension.server.utils.IPacket;
 import net.rainbowcreation.extension.server.utils.ITeam;
 import net.rainbowcreation.extension.server.utils.Reference;
 
@@ -66,6 +69,11 @@ public class Handler {
         x = -23.5;
         y = 63.5;
         z = 0.5;
+        //winter
+        ItemStack item = new ItemStack(Item.getItemById(5059));
+        player.inventory.armorInventory.set(3 , item);
+        z = -252.5;
+        //winter
         player.setPositionAndUpdate(x, y, z);
         BlockPos pos = player.getPosition();
         float yaw = player.rotationYaw, pitch = player.rotationPitch;
@@ -81,10 +89,9 @@ public class Handler {
         }, LoginerConfig.delay, TimeUnit.SECONDS);
         player.sendMessage(new TextComponentString(TextFormatting.BOLD + "[Queue] " + TextFormatting.RESET + "enter the portal to join queue"));
         EntityPlayerMP playerMP = (EntityPlayerMP) player;
-        SPacketTitle packetActionBar = new SPacketTitle(SPacketTitle.Type.ACTIONBAR, new TextComponentString(player.getName()), 20,120,20);
         playerMP.connection.sendPacket(Reference.PACKET_TITLE);
         playerMP.connection.sendPacket(Reference.PACKET_SUB_TITLE);
-        playerMP.connection.sendPacket(packetActionBar);
+        IPacket.sent(playerMP, new TextComponentString(TextFormatting.BOLD + "[Queue] " + TextFormatting.RESET + "enter the portal to join queue"), SPacketTitle.Type.ACTIONBAR,20, 120, 20);
         player.sendMessage(new TextComponentString(TextFormatting.BOLD + "[Auth] " + TextFormatting.RESET + "please login or register\n/login <password>\nor\n/register <password> <password>"));
         break;
       }

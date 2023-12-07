@@ -5,6 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerList;
@@ -246,6 +248,9 @@ public class Main {
         server.getCommandManager().executeCommand(server ,"kill @e[type=item] @e[type=xp_orb]");
         if (settings.MODE.equals("server")) {
           playerList.sendMessage((ITextComponent) new TextComponentString(TextFormatting.BOLD + "[Clear Lag] " + TextFormatting.RESET + "Cleared " + TextFormatting.RED + amount + TextFormatting.RESET + " items!"));
+          for (EntityPlayerMP playerMP : playerList.getPlayers())
+            server.getCommandManager().executeCommand(server,"give " + playerMP.getName() + " lycanitesmobs:wintergift 4");
+          playerList.sendMessage(new TextComponentString(TextFormatting.BOLD + "[Winter Gift] " + TextFormatting.RESET + "Happy winter!\n   even the weather here was " + TextFormatting.RED + "HOT AS HELL " + TextFormatting.RESET + "but ,\n   Here was your " + TextFormatting.GREEN + "Winter Gift x4"));
         }
       }
       for (EntityPlayerMP player : playerList.getPlayers())
