@@ -26,9 +26,7 @@ public class Xpdrop {
             // Check if the player killed the entity
             // Transfer the experience directly to the player
             //entity.addExperience(event.getDroppedExperience());
-            ISpawn.spawnXPOrb(entity.world, entity.posX, entity.posY + 0.5D, entity.posZ, (event.getDroppedExperience() * 2));
-            TextComponentString text = new TextComponentString("Winter Ongoing event! EXP"+ TextFormatting.GREEN + "x2");
-            IPacket.sent((EntityPlayerMP) entity, text, SPacketTitle.Type.ACTIONBAR, 20, 120, 20);
+            ISpawn.spawnXPOrb(entity.world, entity.posX, entity.posY + 0.5D, entity.posZ, event.getDroppedExperience());
         }
         // Cancel the original event to avoid spawning XP orbs
         event.setCanceled(true);

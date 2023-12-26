@@ -17,7 +17,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'jacoco'
 
-version = "1.12.2-v1.4-server-winter"
+version = "1.12.2-v2.0-server"
 group = "net.rainbowcreation.extension"
 archivesBaseName = "RBCextension"
 sourceCompatibility = targetCompatibility = "1.8"
@@ -38,6 +38,10 @@ minecraft {
     mappings = "snapshot_20171003"
 }
 
+repositories {
+    maven { url = "https://repo.spongepowered.org/maven/"}
+}
+
 dependencies {
     embed 'org.mariadb.jdbc:mariadb-java-client:2.2.5'
     embed group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
@@ -45,6 +49,8 @@ dependencies {
     embed group: 'org.hibernate', name: 'hibernate-validator', version: '6.0.14.Final'
     embed group: 'javax.el', name: 'javax.el-api', version: '3.0.1-b06'
     embed group: 'org.glassfish.web', name: 'javax.el', version: '2.2.6'
+    implementation files("libs/bungeeforge-1.12.2")
+    // compileOnly 'org.spongepowered:spongeapi:7.4.0'
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.25.2'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.24.0'
     testCompile('org.junit.jupiter:junit-jupiter-api:5.3.2')

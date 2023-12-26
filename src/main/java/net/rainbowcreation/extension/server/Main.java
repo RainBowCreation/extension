@@ -17,6 +17,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.rainbowcreation.extension.server.config.GenaralConfig;
 import net.rainbowcreation.extension.server.event.loginer.Handler;
 import net.rainbowcreation.extension.server.event.requiemsleep.Requiem;
@@ -51,6 +53,7 @@ import static net.rainbowcreation.extension.server.config.RedstoneBlockConfig.bl
 @Mod.EventBusSubscriber
 @Mod(modid = Reference.MODID, name = Reference.NAME, version = Reference.VERSION, serverSideOnly = true, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "[1.12.2]")
 public class Main {
+
   public static Logger LOGGER = FMLLog.log;
   private static int staticTime;
 
@@ -158,6 +161,8 @@ public class Main {
     }
   }
 
+  public static SimpleNetworkWrapper NETWORK_WRAPPER; //test bungee
+
   @EventHandler
   public void preInit(FMLPreInitializationEvent event) throws Exception {
     LOGGER = event.getModLog();
@@ -176,6 +181,7 @@ public class Main {
     } 
     this.dataSourceStrategy = null;
     LOGGER.info("Unknown guard strategy selected. Nothing will happen.");
+    NETWORK_WRAPPER = NetworkRegistry.INSTANCE.newSimpleChannel("BungeeCord"); // test bungee
   }
   
   @EventHandler

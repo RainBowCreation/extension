@@ -1,11 +1,13 @@
 package net.rainbowcreation.extension.server.event.corrupted;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.rainbowcreation.extension.server.model.Player;
+import net.rainbowcreation.extension.server.network.Bungee;
 import net.rainbowcreation.extension.server.utils.ITeam;
 
 
@@ -21,6 +23,7 @@ public class handler {
         EntityPlayer player = (EntityPlayer) event.getSource().getTrueSource();
         MinecraftServer server = player.getEntityWorld().getMinecraftServer();
         ITeam.joinTeam(server, player.getName(), "Combatant");
+        Bungee.sendPlayerToServer((EntityPlayerMP) player, "lobby");
     }
 
     public static void onDeath(LivingDeathEvent event) {
