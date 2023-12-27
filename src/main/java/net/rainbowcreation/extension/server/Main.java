@@ -67,6 +67,11 @@ public class Main {
   private Handler handler;
   public static int end_counting = 0;
   public static List<EntityPlayer> sleepList = new ArrayList<EntityPlayer>();
+  private static Main instance;
+
+  public static Main getInstance() {
+    return instance;
+  }
   
   private IDataSourceStrategy dataSourceStrategy;
   public static final Set<Block> redstoneRelatedBlocks = new HashSet<>();
@@ -165,6 +170,7 @@ public class Main {
 
   @EventHandler
   public void preInit(FMLPreInitializationEvent event) throws Exception {
+    instance = this;
     LOGGER = event.getModLog();
     for (String txt: Reference.HEADER)
       LOGGER.info(txt);
@@ -254,9 +260,6 @@ public class Main {
         server.getCommandManager().executeCommand(server ,"kill @e[type=item] @e[type=xp_orb]");
         if (settings.MODE.equals("server")) {
           playerList.sendMessage((ITextComponent) new TextComponentString(TextFormatting.BOLD + "[Clear Lag] " + TextFormatting.RESET + "Cleared " + TextFormatting.RED + amount + TextFormatting.RESET + " items!"));
-          for (EntityPlayerMP playerMP : playerList.getPlayers())
-            server.getCommandManager().executeCommand(server,"give " + playerMP.getName() + " lycanitesmobs:wintergift 4");
-          playerList.sendMessage(new TextComponentString(TextFormatting.BOLD + "[Winter Gift] " + TextFormatting.RESET + "Happy winter!\n   even the weather here was " + TextFormatting.RED + "HOT AS HELL " + TextFormatting.RESET + "but ,\n   Here was your " + TextFormatting.GREEN + "Winter Gift x4"));
         }
       }
       for (EntityPlayerMP player : playerList.getPlayers())
@@ -310,11 +313,5 @@ public class Main {
     }
     timeRemaining-= ITime.getSubstractInSecond(time, timePrevious);
     timePrevious = time;
-  }
-
-  @SubscribeEvent
-  public void onPlace(BlockEvent.PlaceEvent event) {
-    Main.LOGGER.info("placed");
-    Main.LOGGER.info(event.getPlacedBlock());
   }
 }

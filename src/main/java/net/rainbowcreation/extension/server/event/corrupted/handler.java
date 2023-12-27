@@ -21,15 +21,18 @@ public class handler {
         if (!(event.getEntityLiving() instanceof EntityPlayer) || !(event.getSource().getTrueSource() instanceof EntityPlayer))
             return;
         EntityPlayer player = (EntityPlayer) event.getSource().getTrueSource();
+        if (player.getName().equals(event.getEntityLiving().getName()))
+            return;
         MinecraftServer server = player.getEntityWorld().getMinecraftServer();
         ITeam.joinTeam(server, player.getName(), "Combatant");
-        Bungee.sendPlayerToServer((EntityPlayerMP) player, "lobby");
     }
 
     public static void onDeath(LivingDeathEvent event) {
         if (!(event.getEntityLiving() instanceof EntityPlayer) || !(event.getSource().getTrueSource() instanceof EntityPlayer))
             return;
         EntityPlayer player = (EntityPlayer) event.getSource().getTrueSource();
+        if (player.getName().equals(event.getEntityLiving().getName()))
+            return;
         MinecraftServer server = player.getEntityWorld().getMinecraftServer();
         ITeam.joinTeam(server, player.getName(), "Corrupted");
         ITeam.joinTeam(server, event.getEntityLiving().getName(), "Non-Combatant");

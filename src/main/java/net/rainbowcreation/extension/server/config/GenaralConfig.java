@@ -31,6 +31,9 @@ public class GenaralConfig {
 
         @Comment({"Mode of the instance [server, lobby]"})
         public String MODE = "server";
+
+        @Comment({"if you don't know what it does. Don't touch it!"})
+        public String SERVER = "server";
     }
 
     public static Blacklist blacklist = new Blacklist();

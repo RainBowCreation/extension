@@ -5,6 +5,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -29,18 +30,18 @@ public class Bungee {
             SPacketCustomPayload packet = new SPacketCustomPayload("BungeeCord", new PacketBuffer(Unpooled.wrappedBuffer(data)));
 
             // Send the packet to the player
-            player.sendMessage(new TextComponentString("Send"));
             player.connection.sendPacket(packet);
         } catch (IOException e) {
             e.printStackTrace();
+            player.sendMessage(new TextComponentString(TextFormatting.RED + "Error " + e.getLocalizedMessage()));
         } finally {
             // Close the streams
             try {
                 b.close();
                 out.close();
-                player.sendMessage(new TextComponentString("Sent!"));
             } catch (IOException e) {
                 e.printStackTrace();
+                player.sendMessage(new TextComponentString(TextFormatting.RED + "Error " + e.getLocalizedMessage()));
             }
         }
     }
