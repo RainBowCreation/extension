@@ -12,7 +12,7 @@ import net.rainbowcreation.extension.server.utils.ITeam;
 
 public class handler {
     public static void onJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        ((EntityPlayerMP) event.player).connection.sendPacket(new SPacketResourcePackSend("https://github.com/RainBowCreation/resourcepack/releases/latest/download/RainBowCreation_v1_11.zip" + "?timestamp=" + System.currentTimeMillis(), ""));
+        // ((EntityPlayerMP) event.player).connection.sendPacket(new SPacketResourcePackSend("https://github.com/RainBowCreation/resourcepack/releases/latest/download/RainBowCreation_v1_11.zip" + "?timestamp=" + System.currentTimeMillis(), ""));
         MinecraftServer server = event.player.getEntityWorld().getMinecraftServer();
         ITeam.joinTeam(server, event.player.getName(), "Non-Combatant");
     }

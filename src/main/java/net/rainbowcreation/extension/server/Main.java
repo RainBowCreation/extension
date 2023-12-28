@@ -177,17 +177,18 @@ public class Main {
     LOGGER.info(IString.genHeader(Reference.NAME+":"+Reference.VERSION+":"+settings.MODE));
     switch (LoginerConfig.dataSourceStrategy) {
       case DATABASE:
-        this.dataSourceStrategy = (IDataSourceStrategy)new DatabaseSourceStrategy(LoginerConfig.database.table, (IConnectionFactory)new ConnectionFactory(LoginerConfig.database.dialect, LoginerConfig.database.host, LoginerConfig.database.port, LoginerConfig.database.database, LoginerConfig.database.user, LoginerConfig.database.password));
+        instance.dataSourceStrategy = (IDataSourceStrategy)new DatabaseSourceStrategy(LoginerConfig.database.table, (IConnectionFactory)new ConnectionFactory(LoginerConfig.database.dialect, LoginerConfig.database.host, LoginerConfig.database.port, LoginerConfig.database.database, LoginerConfig.database.user, LoginerConfig.database.password));
         LOGGER.info("Now using DatabaseSourceStrategy.");
         return;
       case FILE:
-        this.dataSourceStrategy = (IDataSourceStrategy)new FileDataSourceStrategy(Paths.get(event.getModConfigurationDirectory().getAbsolutePath(), new String[] { Reference.NAME+".csv" }).toFile());
+        instance.dataSourceStrategy = (IDataSourceStrategy)new FileDataSourceStrategy(Paths.get(event.getModConfigurationDirectory().getAbsolutePath(), new String[] { Reference.NAME+".csv" }).toFile());
         LOGGER.info("Now using FileDataSourceStrategy.");
         return;
     } 
-    this.dataSourceStrategy = null;
+    instance.dataSourceStrategy = null;
     LOGGER.info("Unknown guard strategy selected. Nothing will happen.");
     NETWORK_WRAPPER = NetworkRegistry.INSTANCE.newSimpleChannel("BungeeCord"); // test bungee
+    NetworkRegistry.INSTANCE.registerGuiHandler(instance, new net.rainbowcreation.extension.server.gui.Handler());
   }
   
   @EventHandler
