@@ -32,6 +32,7 @@ public class Requiem {
     public static long acceleration = 1;
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onSleep(PlayerSleepInBedEvent event) {
+        /*
         EntityPlayer player = event.getEntityPlayer();
         World world = player.getEntityWorld();
         if (world.provider.getDimension() != 0)
@@ -53,10 +54,13 @@ public class Requiem {
         for (EntityPlayerMP playerMP : server.getPlayerList().getPlayers()) {
             IPacket.sent(playerMP, textComponents, SPacketTitle.Type.ACTIONBAR, 20, 120, 20);
         }
+
+         */
     }
 
     @SubscribeEvent
     public static void onWake(PlayerWakeUpEvent event) {
+        /*
         EntityPlayer player = event.getEntityPlayer();
         Main.sleepList.remove(player);
         World world = player.getEntityWorld();
@@ -67,13 +71,16 @@ public class Requiem {
         if (world.isDaytime())
             return;
         server.getPlayerList().sendMessage(new TextComponentString(TextFormatting.BOLD + "[Requiem Sleep] ").appendSibling(player.getDisplayName()).appendSibling(new TextComponentString(" is no longer sleeping " + TextFormatting.RED + Main.sleepList.size() + "/" + server.getCurrentPlayerCount() + " " + percent + "%")));
+        */
     }
 
     public static void onPlayerLeft(PlayerEvent.PlayerLoggedOutEvent event) {
+        /*
         EntityPlayer player = event.player;
         if (Main.sleepList.contains(player))
             Main.sleepList.remove(player);
         calculateSpeed(calculatePercent(Main.sleepList.size(), player.getEntityWorld().getMinecraftServer().getCurrentPlayerCount()));
+         */
     }
 
     private static int calculatePercent(int i, int j) {

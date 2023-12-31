@@ -1,7 +1,11 @@
 package net.rainbowcreation.extension.server.event.clearlag;
 
+import net.minecraft.block.Block;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.world.BlockEvent;
@@ -21,6 +25,9 @@ public class TilesEntity {
         if (clearLag.TILE_LIMIT == 0) {
             return;
         }
+        if (!isTileEntityBlock(event.getWorld(), event.getPos())) {
+            return;
+        }
         World world = event.getWorld();
         int chunkX = event.getPos().getX() >> 4;
         int chunkZ = event.getPos().getZ() >> 4;
@@ -35,5 +42,14 @@ public class TilesEntity {
             // You can optionally send a message to the player indicating that the limit has been reached.
             event.getPlayer().sendMessage(new TextComponentString(TextFormatting.BOLD + "[Clear Lag] " + TextFormatting.RESET + TextFormatting.RED + "TilesEntity reached limit in this chunk."));
         }
+    }
+
+
+    private static boolean isTileEntityBlock(IBlockAccess world, BlockPos pos) {
+        Block block = world.getBlockState(pos).getBlock();
+        TileEntity tileEntity = world.getTileEntity(pos);
+
+        // Check if the block has a tile entity
+        return block != null && tileEntity != null;
     }
 }
